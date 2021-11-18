@@ -1,9 +1,14 @@
 import axios from 'axios';
 import React, { useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import useSWR from 'swr';
 import { Header, Form, Label, Input, LinkContainer, Button, Error, Success } from './styles';
+import fetcher from '@utils/fetcher';
 
 const SignUp = () => {
+  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
+    dedupingInterval: 10000,
+  });
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
@@ -45,7 +50,7 @@ const SignUp = () => {
         setSignUpSuccess(false);
         // ㄴ 비동기 요청 전에 관련있는 state는 비동기 요청 전에 초기화를 해주는 게 좋다.
         axios
-          .post('/api/users', {
+          .post('http://localhost:3095/api/users', {
             email,
             nickname,
             password,
@@ -63,6 +68,14 @@ const SignUp = () => {
     },
     [email, nickname, password, passwordCheck, mismatchError],
   );
+
+  if (data === undefined) {
+    return <div>로딩중....</div>;
+  }
+
+  if (data) {
+    return <Redirect to="/workspace/channel" />;
+  }
 
   return (
     <div id="container">
@@ -107,6 +120,7 @@ const SignUp = () => {
       <LinkContainer>
         이미 회원이신가요?&nbsp;
         <Link to="/login">로그인 하러가기</Link>
+        {/* Link를 써야 화면 새로고침 안됨 */}
       </LinkContainer>
     </div>
   );
