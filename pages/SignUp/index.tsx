@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Header, Form, Label, Input, LinkContainer, Button, Error } from './styles';
+import { Header, Form, Label, Input, LinkContainer, Button, Error, Success } from './styles';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +9,8 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [mismatchError, setMismatchError] = useState(false);
+  const [signUpError, setSignupError] = useState('');
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   const onChangeEmail = useCallback((e) => {
     setEmail(e.target.value);
@@ -39,17 +41,22 @@ const SignUp = () => {
     (e) => {
       e.preventDefault();
       if (!mismatchError) {
+        setSignupError('');
+        setSignUpSuccess(false);
+        // ㄴ 비동기 요청 전에 관련있는 state는 비동기 요청 전에 초기화를 해주는 게 좋다.
         axios
-          .post('http://localhost:3095/api/users', {
+          .post('/api/users', {
             email,
             nickname,
             password,
           })
           .then((res) => {
             console.log(res);
+            setSignUpSuccess(true);
           })
           .catch((res) => {
-            console.log(res);
+            console.log(res.response);
+            setSignupError(res.response.data);
           })
           .finally(() => {});
       }
@@ -92,8 +99,8 @@ const SignUp = () => {
           </div>
           {mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
           {!nickname && <Error>닉네임을 입력해주세요.</Error>}
-          {/* {signUpError && <Error>{signUpError}</Error>} */}
-          {/* {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>}  */}
+          {signUpError && <Error>{signUpError}</Error>}
+          {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>}
         </Label>
         <Button type="submit">회원가입</Button>
       </Form>
