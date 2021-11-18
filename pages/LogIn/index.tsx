@@ -7,9 +7,8 @@ import fetcher from '@utils/fetcher';
 
 const LogIn = () => {
   const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
-    dedupingInterval: 10000,
+    dedupingInterval: 2000,
   });
-  console.log(data, 'SWR');
   // ㄴ swr은 get요청에만 먹힘
   // useSWR 파라미터 1. api주소 2. 데이터 처리 미들웨어
   // SWR은 자동으로 요청을 다시 보내준다.
@@ -40,8 +39,7 @@ const LogIn = () => {
           },
         )
         .then((response) => {
-          console.log(response);
-          mutate(response.data, false);
+          mutate(response.data);
         })
         .catch((error) => {
           console.log(error.response);
