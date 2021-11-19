@@ -6,7 +6,7 @@ import { Header, Form, Label, Input, LinkContainer, Button, Error, Success } fro
 import fetcher from '@utils/fetcher';
 
 const SignUp = () => {
-  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
+  const { data, error, mutate } = useSWR('/api/users', fetcher, {
     dedupingInterval: 10000,
   });
   const [email, setEmail] = useState('');
@@ -50,7 +50,7 @@ const SignUp = () => {
         setSignUpSuccess(false);
         // ㄴ 비동기 요청 전에 관련있는 state는 비동기 요청 전에 초기화를 해주는 게 좋다.
         axios
-          .post('http://localhost:3095/api/users', {
+          .post('/api/users', {
             email,
             nickname,
             password,

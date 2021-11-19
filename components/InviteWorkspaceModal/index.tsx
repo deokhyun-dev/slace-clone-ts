@@ -19,16 +19,14 @@ const InviteWorkspaceModal: VFC<Props> = ({ show, onCloseModal, setShowInviteWor
   const [newMember, onChangeNewMember, setNewMember] = useInput('');
   const { workspace } = useParams<{ workspace: string }>();
 
-  const { data: userData } = useSWR<IUser>('http://localhost:3095/api/users', fetcher);
+  const { data: userData } = useSWR<IUser>('/api/users', fetcher);
 
-  const { data, error, mutate } = useSWR<IChannel[]>(
-    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
-  );
+  const { data, error, mutate } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/members` : null);
 
   const onInviteMember = useCallback((e) => {
     e.preventDefault();
     axios
-      .post(`http://localhost:3095/api//workspaces/${workspace}/members`)
+      .post(`/api//workspaces/${workspace}/members`)
       .then((res) => {
         mutate(res.data, false);
         setNewMember('');
