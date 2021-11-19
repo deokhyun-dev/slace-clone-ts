@@ -22,6 +22,8 @@ import gravatar from 'gravatar';
 import loadable from '@loadable/component';
 import Menu from '@components/Menu';
 import { IUser } from '@typings/db';
+import { Input, Label, Button } from '@pages/SignUp/styles';
+import useInput from '@hooks/useInput';
 
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessge'));
@@ -32,6 +34,9 @@ const Workspace: FC = ({ children }) => {
 
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
+  const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
+  const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
+
   const {
     data: userData,
     error,
@@ -57,6 +62,12 @@ const Workspace: FC = ({ children }) => {
 
   const onClickCreateWorkspace = useCallback(() => {
     setShowCreateWorkspaceModal(true);
+  }, []);
+
+  const onCreateWorkspace = useCallback(() => {}, []);
+
+  const onCloseModal = useCallback(() => {
+    setShowCreateWorkspaceModal(false);
   }, []);
 
   if (!userData) {
@@ -108,6 +119,19 @@ const Workspace: FC = ({ children }) => {
           </Switch>
         </Chats>
       </WorkspaceWrapper>
+      <Modal show={showCreateWorkspaceModal} onCloseModal={onCloseModal}>
+        <form onSubmit={onCreateWorkspace}>
+          <Label id="workspace-label">
+            <span>워크스페이스 이름</span>
+            <Input id="workspace" value={newWorkspace} onChange={onChangeNewWorkspace} />
+          </Label>
+          <Label id="workspace-url-label">
+            <span>워크스페이스 이름</span>
+            <Input id="workspace" value={newUrl} onChange={onChangeNewUrl} />
+          </Label>
+          <Button type="submit">생성하기</Button>
+        </form>
+      </Modal>
     </div>
   );
 };
