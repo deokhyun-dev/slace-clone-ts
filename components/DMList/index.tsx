@@ -1,19 +1,14 @@
+import useSocket from '@hooks/useSocket';
 import { IUser, IUserWithOnline } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import React, { useCallback, useState, FC } from 'react';
+import React, { useCallback, useState, FC, useEffect } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import useSWR from 'swr';
 import { CollapseButton } from './styles';
 
-// interface Props {
-//   userData: IUser;
-// }
-
-const DMList = () => {
+const DMList: FC = () => {
   const { workspace } = useParams<{ workspace: string }>();
-  const [channelCollapse, setChannelCollaps] = useState(false);
-  const [onlineList, setOneLineList] = useState<number[]>([]);
-
+  console.log(workspace, '워크스페이스');
   const { data: userData } = useSWR<IUser>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
@@ -23,9 +18,34 @@ const DMList = () => {
     fetcher,
   );
 
+  console.log(workspace);
+  const [socket, disconnect] = useSocket(workspace);
+
+  const [channelCollapse, setChannelCollaps] = useState(false);
+  const [onlineList, setOnlineList] = useState<number[]>([]);
+
   const toggleChannelCollapse = useCallback(() => {
     setChannelCollaps((prev) => !prev);
   }, []);
+
+  useEffect(() => {
+    console.log('DMLIST 바뀜', workspace);
+    setOnlineList([]);
+  }, [workspace]);
+
+  useEffect(() => {
+    socket?.on('onlineList', (data: number[]) => {
+      console.log(data, 'DMlist');
+      setOnlineList(data);
+    });
+    // socket?.on('dm', onMessage);
+    // console.log('socket on dm', socket?.hasListeners('dm'), socket);
+    return () => {
+      // socket?.off('dm', onMessage);
+      // console.log('socket off dm', socket?.hasListeners('dm'));
+      socket?.off('onlineList');
+    };
+  }, [socket]);
 
   return (
     <>
@@ -41,7 +61,7 @@ const DMList = () => {
       </h2>
       {!channelCollapse &&
         memberData?.map((member) => {
-          const isOnline = onlineList.includes(member?.id);
+          const isOnline = onlineList.includes(member.id);
           // const count = countList[member.id] || 0;
           return (
             <NavLink key={member.id} activeClassName="selected" to={`/workspace/${workspace}/dm/${member.id}`}>

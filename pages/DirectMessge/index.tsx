@@ -11,7 +11,6 @@ import axios from 'axios';
 
 const DirectMessage = () => {
   const params = useParams();
-  console.log(params);
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
 
   const { data: myData } = useSWR('/api/users', fetcher, {
@@ -32,7 +31,6 @@ const DirectMessage = () => {
             content: chat,
           })
           .then((res) => {
-            console.log(res);
             setChat('');
           })
           .catch((error) => {

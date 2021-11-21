@@ -15,9 +15,12 @@ const ChanneList = () => {
 
   const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
 
+  console.log(workspace, '채널리스트');
+  console.log(channelData, '채널리스트');
   const toggleChannelCollaps = useCallback(() => {
     setChannelCollaps((prev) => !prev);
   }, []);
+
   return (
     <>
       <h2>

@@ -12,28 +12,52 @@ const backUrl = 'http://localhost:3095';
 const sockets: { [key: string]: SocketIOClient.Socket } = {};
 // 타입스크립트의 경우 빈 객체나 빈배열인 경우 타입을 선언해줘야함
 
-const useSocket = (workspace?: string) => {
+// const useSocket = (workspace?: string): [SocketIOClient.Socket | undefined, () => void] => {
+//   const disconnect = useCallback(() => {
+//     if (workspace) {
+//       sockets[workspace].disconnect();
+//       delete sockets[workspace];
+//     }
+//   }, [workspace]);
+
+//   if (!workspace) {
+//     return [undefined, disconnect];
+//   }
+
+//   if (!sockets[workspace]) {
+//     sockets[workspace] = io.connect(`${backUrl}/ws-${workspace}`, {
+//       transports: ['websocket'],
+//     });
+//   }
+
+//   // ㄴ 'hello'는 이벤트명, 'world'는 데이터명 -> 헬로라는 이름으로 월드라는 데이터를 보냄
+
+//   // socket.on('message', (data) => {
+//   //   console.log(data);
+//   // });
+//   // on이라는 이벤트리스너를 붙이는 형태
+
+//   // emit으로 보내고, on으로 이벤트명 일치할 때 받고
+
+//   return [sockets[workspace], disconnect];
+// };
+
+const useSocket = (workspace?: string): [SocketIOClient.Socket | undefined, () => void] => {
+  console.log('rerender', workspace);
   const disconnect = useCallback(() => {
     if (workspace) {
       sockets[workspace].disconnect();
+      delete sockets[workspace];
     }
   }, [workspace]);
-
   if (!workspace) {
     return [undefined, disconnect];
   }
-
-  sockets[workspace] = io.connect(`${backUrl}/ws-${workspace}`);
-
-  sockets[workspace].emit('hello', 'world');
-  // ㄴ 'hello'는 이벤트명, 'world'는 데이터명 -> 헬로라는 이름으로 월드라는 데이터를 보냄
-
-  // socket.on('message', (data) => {
-  //   console.log(data);
-  // });
-  // on이라는 이벤트리스너를 붙이는 형태
-
-  // emit으로 보내고, on으로 이벤트명 일치할 때 받고
+  if (!sockets[workspace]) {
+    sockets[workspace] = io.connect(`${backUrl}/ws-${workspace}`, {
+      transports: ['websocket'],
+    });
+  }
 
   return [sockets[workspace], disconnect];
 };

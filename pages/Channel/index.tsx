@@ -12,8 +12,6 @@ import { IDM } from '@typings/db';
 const Channel = () => {
   const [chat, onChangeChat, setChat] = useInput('');
   const params = useParams();
-  console.log(chat);
-  console.log(params);
   const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
   const { data: myData } = useSWR('/api/users', fetcher, {
     dedupingInterval: 2000,
