@@ -12,6 +12,7 @@ import { IDM } from '@typings/db';
 const Channel = () => {
   const [chat, onChangeChat, setChat] = useInput('');
   const params = useParams();
+
   const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
   const { data: myData } = useSWR('/api/users', fetcher, {
     dedupingInterval: 2000,
@@ -47,7 +48,7 @@ const Channel = () => {
   return (
     <Container>
       <Header> 채널페이지</Header>
-      <ChatList />
+      {/* <ChatList chatData={chatData} /> */}
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} placeholder="채팅을 입력해주세요" />
     </Container>
   );

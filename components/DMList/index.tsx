@@ -8,7 +8,6 @@ import { CollapseButton } from './styles';
 
 const DMList: FC = () => {
   const { workspace } = useParams<{ workspace: string }>();
-  console.log(workspace, '워크스페이스');
   const { data: userData } = useSWR<IUser>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
@@ -18,7 +17,6 @@ const DMList: FC = () => {
     fetcher,
   );
 
-  console.log(workspace);
   const [socket, disconnect] = useSocket(workspace);
 
   const [channelCollapse, setChannelCollaps] = useState(false);
@@ -29,7 +27,6 @@ const DMList: FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log('DMLIST 바뀜', workspace);
     setOnlineList([]);
   }, [workspace]);
 

@@ -118,7 +118,6 @@ const Workspace: VFC = () => {
       axios
         .post('/api/workspaces', { workspace: newWorkspace, url: newUrl }, { withCredentials: true })
         .then((res) => {
-          console.log(res);
           mutate();
           setShowCreateWorkspaceModal(false);
           setNewUrl('');

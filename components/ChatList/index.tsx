@@ -1,14 +1,21 @@
 import React, { VFC } from 'react';
 import { ChatZone, Section } from '@components/ChatList/styles';
+import useSWR from 'swr';
+import { useParams } from 'react-router-dom';
+import fetcher from '@utils/fetcher';
+import { IDM } from '@typings/db';
+import Chat from '@components/Chat';
 
-// interface Props {
-//   onSubmitForm: (e: any) => void;
-// }
+interface Props {
+  chatData?: IDM[];
+}
 
-const ChatList = () => {
+const ChatList: VFC<Props> = ({ chatData }) => {
   return (
     <ChatZone>
-      <Section>section</Section>
+      {chatData?.map((chat) => {
+        return <Chat data={chat} />;
+      })}
     </ChatZone>
   );
 };

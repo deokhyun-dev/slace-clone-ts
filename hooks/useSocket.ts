@@ -43,7 +43,6 @@ const sockets: { [key: string]: SocketIOClient.Socket } = {};
 // };
 
 const useSocket = (workspace?: string): [SocketIOClient.Socket | undefined, () => void] => {
-  console.log('rerender', workspace);
   const disconnect = useCallback(() => {
     if (workspace) {
       sockets[workspace].disconnect();

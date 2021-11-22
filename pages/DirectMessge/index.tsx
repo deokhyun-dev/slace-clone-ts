@@ -8,6 +8,7 @@ import ChatBox from '@components/ChatBox';
 import ChatList from '@components/ChatList';
 import useInput from '@hooks/useInput';
 import axios from 'axios';
+import { IDM } from '@typings/db';
 
 const DirectMessage = () => {
   const params = useParams();
@@ -18,14 +19,14 @@ const DirectMessage = () => {
   });
   const { data: userData } = useSWR(`/api/workspaces/${workspace}/users/${id}`, fetcher);
 
+  const { data: chatData } = useSWR<IDM[]>(`/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=1`, fetcher);
+
   const [chat, onChangeChat, setChat] = useInput('');
 
   const onSubmitForm = useCallback(
     (e) => {
-      console.log('클릭');
       e.preventDefault();
       if (chat?.trim()) {
-        console.log(chat, '트림안');
         axios
           .post(`/api/workspaces/${workspace}/dms/${id}/chats`, {
             content: chat,
@@ -51,7 +52,7 @@ const DirectMessage = () => {
         <img src={gravatar.url(userData.email, { s: '24px', d: 'robohash' })} alt={userData.email} />
         <span>{userData.nickname}</span>
       </Header>
-      <ChatList />
+      <ChatList chatData={chatData} />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} placeholder="채팅을 입력해주세요" />
     </Container>
   );
